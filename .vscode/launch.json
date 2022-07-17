@@ -19,11 +19,11 @@
     {
       "type": "pwa-node",
       "request": "launch",
-      "name": "JSfetch",
+      "name": "Tester",
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "program": "${workspaceFolder}/jsfetcher.js",
+      "program": "${workspaceFolder}/test.js",
       "outFiles": [
         "${workspaceFolder}/**/*.js"
       ]
