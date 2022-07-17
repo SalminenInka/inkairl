@@ -1,45 +1,47 @@
 const fs = require("fs")
-var express = require('express');
-var app = express();
+const express = require('express');
+const router = express.Router();
+const bodyParser = require("body-parser");
+const { error } = require("console");
+const app = express();
 
 ////////////////////////////////////////////////
-class Person {
-
-constructor(Name, Age) {
-  this.Name = Name;
-  this.Age = Age;
-  }
-}
-////////////////////////////////////////////////
-const myObject = new Person('Jane Doe', 666);
-const nextObject = new Person('John Deere', 999);
-const typeTester = new Person('Type test', 888)
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 /////////////////////////////////////////////////
 
-let fileExists = fs.existsSync('./tryMe.json');
-console.log("tryMe.json exists:", fileExists);
+const fileName = './tryMe.json';
+const fileExists = fs.existsSync(fileName);
+console.log(`${fileName} exists:`, fileExists);
 if (!fileExists) {
   console.log("Creating the file")
-  let content = '[]'
-  fs.writeFileSync('./tryMe.json', content);
+  fs.writeFileSync(fileName, JSON.stringify([]));
 }
 
 /////////////////////////////////////////////////
 
-addOne(myObject);
-addOne(nextObject);
-addOne(typeTester);
+router.post('/handle', async (req,res) => {
+  //code to execute
+  try {
+    function adder() {
+      console.log('check-box 1');
+      const cont = fs.readFileSync(fileName);
+      const parsed = JSON.parse(cont);
+      parsed.push(req.body);
+      console.log(req.body);
+      const string = JSON.stringify(parsed)
+      fs.writeFileSync(fileName, string);
+    }
+    adder();
+    } catch (err) {
+    res.status(500).end();
+    console.log('An error occured.');
+  }
+});
 
-async function addOne(data) {
-  let arr = fs.readFileSync('./tryMe.json');
-  let file = JSON.parse(arr);
-  file.push(data);
-  let string = JSON.stringify(file)
-  fs.writeFileSync('./tryMe.json', string );
-}
+app.use("/", router);
 
+////////////////////////////////////////////////
 
-/////////////////////////////////////////////
-
-/////////////////////////////////////////////
+app.listen(666);

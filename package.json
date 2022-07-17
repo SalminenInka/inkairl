@@ -2,9 +2,10 @@
   "name": "inkairl",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "writer.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon writer.js --ignore 'tryMe.json'"
   },
   "repository": {
     "type": "git",
@@ -18,10 +19,12 @@
   },
   "homepage": "https://github.com/SalminenInka/inkairl#readme",
   "dependencies": {
+    "body-parser": "^1.20.0",
     "express": "^4.18.1"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
+    "nodemon": "^2.0.19",
     "typescript": "^4.7.4"
   }
 }
