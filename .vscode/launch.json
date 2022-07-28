@@ -7,35 +7,23 @@
     {
       "type": "pwa-node",
       "request": "launch",
-      "name": "fetch",
+      "name": "run_app",
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "program": "${workspaceFolder}/dist/fetcher.js",
+      "program": "${workspaceFolder}/dist/app.js",
       "outFiles": [
         "${workspaceFolder}/**/*.js"
       ]
-    }
+    },
     {
       "type": "pwa-node",
       "request": "launch",
-      "name": "Tester",
+      "name": "run",
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "program": "${workspaceFolder}/test.js",
-      "outFiles": [
-        "${workspaceFolder}/**/*.js"
-      ]
-    }
-    {
-      "type": "pwa-node",
-      "request": "launch",
-      "name": "write",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "program": "${workspaceFolder}/writer.js",
+      "program": "${workspaceFolder}/index.js",
       "outFiles": [
         "${workspaceFolder}/**/*.js"
       ]
