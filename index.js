@@ -1,3 +1,20 @@
+
+/*
+async function query(command) {
+  const connection = await mysql.createConnection({
+    host:'localhost',
+    user: 'root',
+    database: 'userdb',
+    password: process.env.PASSWORD
+  });
+  const [rows] = await connection.
+  execute(command, ...para);
+  return rows;
+};
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+*/
 const { readFile, writeFile } = require("fs/promises")
 const fs = require("fs")
 const express = require('express');
@@ -5,30 +22,23 @@ const router = express.Router();
 const bodyParser = require("body-parser");
 const { error } = require("console");
 const { v4: uuidv4 } = require('uuid');
+
 const app = express();
+app.use("/", router);
 const mysql = require('mysql2/promise');
 
-async function main(command) {
-  const connection = await mysql.createConnection({
-    host:'localhost',
-    user: 'root',
-    database: 'userdb',
-    password: process.env.PASSWORD
-  });
-  const [rows, fields] = await connection.
-  execute(command);
-  return rows;
-};
-
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use("/", router);
-
-//dispaly all user data, all users
+//display all user data, all users
 router.get('/users', async (req, res) => {
   try {
-    const contents = await main('SELECT * FROM `users`');
-    res.json(contents);
+    const connection = await mysql.createConnection({
+      host:'localhost',
+      user: 'root',
+      database: 'userdb',
+      password: process.env.PASSWORD
+    });
+    const [rows] = await connection.
+    execute('SELECT * FROM `users`');
+    res.json([rows]);
   } catch (err) {
     res.status(500).send('Failed to retrieve user data.');
   }
@@ -37,18 +47,33 @@ router.get('/users', async (req, res) => {
 //display user data for user/specific id
 router.get('/users/:id', async (req, res) => {
   try {
-    const contents = await main("SELECT * FROM `users` WHERE `user_id` = `?`", [req.params.id])
-    res.json(contents);
+    const connection = await mysql.createConnection({
+      host:'localhost',
+      user: 'root',
+      database: 'userdb',
+      password: process.env.PASSWORD
+    });
+    const [rows] = await connection.
+    execute('SELECT * FROM `users` WHERE `user_id` = ?', [req.params.id]);
+    res.json([rows]);
   } catch (err) {
     res.status(500).send(err);
   }
 });
 
 //create new user with post()
-router.post('/users', async (req,res) => {
+router.post('/users', async (req, res) => {
   try {
-    const contents = await main('INSERT INTO `users` VALUES (`?`)');
-    res.json(contents);
+    const connection = await mysql.createConnection({
+      host:'localhost',
+      user: 'root',
+      database: 'userdb',
+      password: process.env.PASSWORD
+    });
+    await connection.
+    execute('INSERT INTO users (user_id, lastname, firstname, age) VALUES (?,?,?,?)',
+    [id, req.body.lastname, req.body.firstname, req.body.age]);
+    res.json({id: id});
   } catch (err) {
     res.status(500).send('Failed to create new user.');
   }
@@ -57,8 +82,15 @@ router.post('/users', async (req,res) => {
 //delete user data with user/id
 router.delete('/users/:id', async (req, res) => {
   try {
-    const contents = await main('DELETE FROM users WHERE user_id = ?', [req.params.id])
-    res.json(contents);
+    const connection = await mysql.createConnection({
+      host:'localhost',
+      user: 'root',
+      database: 'userdb',
+      password: process.env.PASSWORD
+    });
+    const [rows] = await connection.
+    execute('DELETE * FROM `users` WHERE `user_id` = ?', [req.params.id]);
+    res.json([rows]);
   } catch (err) {
     res.status(500).send('Failed to delete user data.');
   }

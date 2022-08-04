@@ -1,17 +1,23 @@
 ###
+GET http://localhost:6666/users/6564ba84-1304-11ed-94dc-ab5bc5caa4d6
+Content-Type: application/json
 
+###
+GET http://localhost:6666/users/
+Content-Type: application/json
+
+###
 POST http://localhost:6666/users
 Content-Type: application/json
 
 {
-  "user_id": "uuid()",
-  "lastname": "Salmiman",
-  "firstname": "Inka",
-  "age": 25
+  "lastname": "Sanchez",
+  "firstname": "Rick",
+  "age": 80
 }
 
 ###
-DELETE http://localhost:6666/users/e9015fe0-f985-4322-b962-1149f14ea757
+DELETE http://localhost:6666/users/792823c0-85f8-4aab-bd4b-e497aa030946
 Content-Type: application/json
 
 ###
@@ -19,19 +25,11 @@ PUT http://localhost:6666/users/ec448f0b-a816-49ce-b719-40239835270d
 Content-Type: application/json
 
 {
-  "name": "Evil Chicken",
-  "age": 666,
-  "home address": {
-    "country": "Gielinor",
-    "zip": 666
-  },
-  "from": "osrs"
+  "lastname": "Imwit",
+  "firstname": "Imad",
+  "age": 57
 }
 
 ###
-GET http://localhost:6666/users/656408aa-1304-11ed-94dc-ab5bc5caa4d6
-Content-Type: application/json
-
-###
-GET http://localhost:6666/users/
+GET http://localhost:6666/users/6564ba84-1304-11ed-94dc-ab5bc5caa4d6
 Content-Type: application/json
