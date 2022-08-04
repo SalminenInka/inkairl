@@ -54,7 +54,6 @@ var router = express.Router();
 var bodyParser = require("body-parser");
 var uuid_1 = require("uuid");
 var app = express();
-var environ = require('dotenv').config();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use("/", router);
@@ -67,7 +66,7 @@ if (!fileExists) {
     fs.writeFileSync(fileName, JSON.stringify({}));
 }
 //create new user with post()
-router.post('/users/new', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.post('/users', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var contents, database, string, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -82,7 +81,7 @@ router.post('/users/new', function (req, res) { return __awaiter(void 0, void 0,
                 return [4 /*yield*/, (0, promises_1.writeFile)(fileName, string)];
             case 2:
                 _a.sent();
-                res.send(Object.keys(database)[Object.keys(database).length - 1]);
+                res.json({ id: Object.keys(database)[Object.keys(database).length - 1] });
                 return [3 /*break*/, 4];
             case 3:
                 err_1 = _a.sent();
@@ -127,13 +126,14 @@ router["delete"]('/users/:id', function (req, res) { return __awaiter(void 0, vo
 //update user data with put()
 router.put('/users/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var contents, database, dataString, err_3;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
-                _a.trys.push([0, 5, , 6]);
+                _b.trys.push([0, 5, , 6]);
                 return [4 /*yield*/, (0, promises_1.readFile)(fileName, 'utf-8')];
             case 1:
-                contents = _a.sent();
+                contents = _b.sent();
                 database = JSON.parse(contents);
                 if (!(database.hasOwnProperty(req.params.id) == false)) return [3 /*break*/, 2];
                 res.status(404).send('No such data');
@@ -143,12 +143,12 @@ router.put('/users/:id', function (req, res) { return __awaiter(void 0, void 0, 
                 dataString = JSON.stringify(database);
                 return [4 /*yield*/, (0, promises_1.writeFile)(fileName, dataString)];
             case 3:
-                _a.sent();
-                res.send('User updated.');
-                _a.label = 4;
+                _b.sent();
+                res.json((_a = {}, _a[req.params.id] = database[req.params.id], _a));
+                _b.label = 4;
             case 4: return [3 /*break*/, 6];
             case 5:
-                err_3 = _a.sent();
+                err_3 = _b.sent();
                 res.status(500).send('Failed to update user data.');
                 return [3 /*break*/, 6];
             case 6: return [2 /*return*/];
@@ -170,7 +170,7 @@ router.get('/users/:id', function (req, res) { return __awaiter(void 0, void 0, 
                     res.status(404).send('No such data');
                 }
                 else {
-                    res.send(__assign({}, database[req.params.id]));
+                    res.json(__assign({}, database[req.params.id]));
                 }
                 return [3 /*break*/, 3];
             case 2:
@@ -196,7 +196,7 @@ router.get('/users', function (req, res) { return __awaiter(void 0, void 0, void
                     res.status(404).send('Database seems to be empty.');
                 }
                 else {
-                    res.send(database);
+                    res.json(database);
                 }
                 return [3 /*break*/, 3];
             case 2:

@@ -1,28 +1,35 @@
 ###
 
-POST http://localhost:6666/users/new
+POST http://localhost:6666/users
 Content-Type: application/json
 
 {
-  "name": "Almighty",
-  "age": 666
+  "user_id": "uuid()",
+  "lastname": "Salmiman",
+  "firstname": "Inka",
+  "age": 25
 }
 
 ###
-DELETE http://localhost:6666/users/:id
+DELETE http://localhost:6666/users/e9015fe0-f985-4322-b962-1149f14ea757
 Content-Type: application/json
 
 ###
-PUT http://localhost:6666/users/:id
+PUT http://localhost:6666/users/ec448f0b-a816-49ce-b719-40239835270d
 Content-Type: application/json
 
 {
-  "name": "Almighty Alrighty",
-  "age": 666
+  "name": "Evil Chicken",
+  "age": 666,
+  "home address": {
+    "country": "Gielinor",
+    "zip": 666
+  },
+  "from": "osrs"
 }
 
 ###
-GET http://localhost:6666/users/:id
+GET http://localhost:6666/users/656408aa-1304-11ed-94dc-ab5bc5caa4d6
 Content-Type: application/json
 
 ###

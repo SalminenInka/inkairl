@@ -11,6 +11,7 @@
       "skipFiles": [
         "<node_internals>/**"
       ],
+      "envFile": "${workspaceFolder}/.env",
       "program": "${workspaceFolder}/dist/app.js",
       "outFiles": [
         "${workspaceFolder}/**/*.js"
@@ -23,7 +24,21 @@
       "skipFiles": [
         "<node_internals>/**"
       ],
+      "envFile": "${workspaceFolder}/.env",
       "program": "${workspaceFolder}/index.js",
+      "outFiles": [
+        "${workspaceFolder}/**/*.js"
+      ]
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "try db",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "envFile": "${workspaceFolder}/.env",
+      "program": "${workspaceFolder}/mydb.js",
       "outFiles": [
         "${workspaceFolder}/**/*.js"
       ]

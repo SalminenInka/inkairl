@@ -6,7 +6,6 @@ import bodyParser = require("body-parser");
 import { error } from "console";
 import { v4 as uuidv4 } from 'uuid';
 const app = express();
-const environ = require('dotenv').config()
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -20,14 +19,14 @@ if (!fileExists) {
   fs.writeFileSync(fileName, JSON.stringify({}));
 }
 //create new user with post()
-router.post('/users/new', async (req,res) => {
+router.post('/users', async (req,res) => {
   try {
     const contents = await readFile(fileName, 'utf-8');
     const database = JSON.parse(contents);
     database[uuidv4()] = req.body;
     const string = JSON.stringify(database)
     await writeFile(fileName, string);
-    res.send(Object.keys(database)[Object.keys(database).length-1]);
+    res.json({ id: Object.keys(database)[Object.keys(database).length-1]});
   } catch (err) {
     res.status(500).send('Failed to create new user.');
   }
@@ -61,7 +60,7 @@ router.put('/users/:id', async (req, res) => {
       database[req.params.id] = req.body;
       const dataString = JSON.stringify(database)
       await writeFile(fileName, dataString);
-      res.send('User updated.');
+      res.json({ [req.params.id]: database[req.params.id] });
     }
   } catch (err) {
     res.status(500).send('Failed to update user data.');
@@ -75,7 +74,7 @@ router.get('/users/:id', async (req, res) => {
     if (database.hasOwnProperty(req.params.id) == false) {
       res.status(404).send('No such data');
     } else {
-      res.send({...database[req.params.id]});
+      res.json({...database[req.params.id]});
     }
   } catch (err) {
     res.status(500).send('Failed to retrieve user data.');
@@ -90,7 +89,7 @@ router.get('/users', async (req, res) => {
     if (Object.keys(database).length === 0) {
       res.status(404).send('Database seems to be empty.')
     } else {
-      res.send(database);
+      res.json(database);
     }
   } catch (err) {
     res.status(500).send('Failed to retrieve user data.');
