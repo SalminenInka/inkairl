@@ -1,15 +1,4 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -46,46 +35,75 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 exports.__esModule = true;
-var promises_1 = require("fs/promises");
-var fs = require("fs");
 var express = require("express");
 var router = express.Router();
-var bodyParser = require("body-parser");
-var uuid_1 = require("uuid");
 var app = express();
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+var mysql = require("mysql2/promise");
+var uuid_1 = require("uuid");
 app.use("/", router);
-//check if file exists and create one if needed
-var fileName = process.env.FILENAME;
-var fileExists = fs.existsSync(fileName);
-console.log("".concat(fileName, " exists:"), fileExists);
-if (!fileExists) {
-    console.log("Creating the file");
-    fs.writeFileSync(fileName, JSON.stringify({}));
-}
-//create new user with post()
-router.post('/users', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var contents, database, string, err_1;
+//display all user data, all users
+router.get('/users', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var connection, rows, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 3, , 4]);
-                return [4 /*yield*/, (0, promises_1.readFile)(fileName, 'utf-8')];
+                return [4 /*yield*/, mysql.createConnection({
+                        host: 'localhost',
+                        user: 'root',
+                        database: 'userdb',
+                        password: process.env.PASSWORD
+                    })];
             case 1:
-                contents = _a.sent();
-                database = JSON.parse(contents);
-                database[(0, uuid_1.v4)()] = req.body;
-                string = JSON.stringify(database);
-                return [4 /*yield*/, (0, promises_1.writeFile)(fileName, string)];
+                connection = _a.sent();
+                return [4 /*yield*/, connection.
+                        execute('SELECT * FROM users')];
             case 2:
-                _a.sent();
-                res.json({ id: Object.keys(database)[Object.keys(database).length - 1] });
+                rows = (_a.sent())[0];
+                res.json([rows]);
                 return [3 /*break*/, 4];
             case 3:
                 err_1 = _a.sent();
-                res.status(500).send('Failed to create new user.');
+                res.status(500).send('Failed to retrieve user data.');
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); });
+//display user data for user/specific id
+router.get('/users/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var connection, rows, err_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 3, , 4]);
+                return [4 /*yield*/, mysql.createConnection({
+                        host: 'localhost',
+                        user: 'root',
+                        database: 'userdb',
+                        password: process.env.PASSWORD
+                    })];
+            case 1:
+                connection = _a.sent();
+                return [4 /*yield*/, connection.
+                        execute('SELECT * FROM users WHERE user_id = ?', [req.params.id])];
+            case 2:
+                rows = (_a.sent())[0];
+                res.json([rows]);
+                return [3 /*break*/, 4];
+            case 3:
+                err_2 = _a.sent();
+                res.status(500).send(err_2);
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }
@@ -93,117 +111,90 @@ router.post('/users', function (req, res) { return __awaiter(void 0, void 0, voi
 }); });
 //delete user data with user/id
 router["delete"]('/users/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var contents, database, check, dataString, err_2;
+    var connection, err_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 5, , 6]);
-                return [4 /*yield*/, (0, promises_1.readFile)(fileName, 'utf-8')];
+                _a.trys.push([0, 3, , 4]);
+                return [4 /*yield*/, mysql.createConnection({
+                        host: 'localhost',
+                        user: 'root',
+                        database: 'userdb',
+                        password: process.env.PASSWORD
+                    })];
             case 1:
-                contents = _a.sent();
-                database = JSON.parse(contents);
-                check = database.hasOwnProperty(req.params.id);
-                if (!(check == false)) return [3 /*break*/, 2];
-                res.status(404).send('No such data');
-                return [3 /*break*/, 4];
+                connection = _a.sent();
+                return [4 /*yield*/, connection.
+                        execute('DELETE FROM users WHERE user_id = ?', [req.params.id])];
             case 2:
-                delete database[req.params.id];
-                dataString = JSON.stringify(database);
-                return [4 /*yield*/, (0, promises_1.writeFile)(fileName, dataString)];
-            case 3:
                 _a.sent();
-                res.send('One entry deleted from the database.');
-                _a.label = 4;
-            case 4: return [3 /*break*/, 6];
-            case 5:
-                err_2 = _a.sent();
-                res.status(500).send('Failed to delete user data.');
-                return [3 /*break*/, 6];
-            case 6: return [2 /*return*/];
-        }
-    });
-}); });
-//update user data with put()
-router.put('/users/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var contents, database, dataString, err_3;
-    var _a;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0:
-                _b.trys.push([0, 5, , 6]);
-                return [4 /*yield*/, (0, promises_1.readFile)(fileName, 'utf-8')];
-            case 1:
-                contents = _b.sent();
-                database = JSON.parse(contents);
-                if (!(database.hasOwnProperty(req.params.id) == false)) return [3 /*break*/, 2];
-                res.status(404).send('No such data');
+                res.json('deleted user: ' + req.params.id);
                 return [3 /*break*/, 4];
-            case 2:
-                database[req.params.id] = req.body;
-                dataString = JSON.stringify(database);
-                return [4 /*yield*/, (0, promises_1.writeFile)(fileName, dataString)];
             case 3:
-                _b.sent();
-                res.json((_a = {}, _a[req.params.id] = database[req.params.id], _a));
-                _b.label = 4;
-            case 4: return [3 /*break*/, 6];
-            case 5:
-                err_3 = _b.sent();
-                res.status(500).send('Failed to update user data.');
-                return [3 /*break*/, 6];
-            case 6: return [2 /*return*/];
+                err_3 = _a.sent();
+                res.status(500).send('Failed to delete user data.');
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); });
-//display user data for user/specific id
-router.get('/users/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var contents, database, err_4;
+//create new user with post() not done
+router.post('/users', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, connection, err_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, (0, promises_1.readFile)(fileName, 'utf-8')];
+                _a.trys.push([0, 3, , 4]);
+                id = (0, uuid_1.v4)();
+                console.log(id);
+                return [4 /*yield*/, mysql.createConnection({
+                        host: 'localhost',
+                        user: 'root',
+                        database: 'userdb',
+                        password: process.env.PASSWORD
+                    })];
             case 1:
-                contents = _a.sent();
-                database = JSON.parse(contents);
-                if (database.hasOwnProperty(req.params.id) == false) {
-                    res.status(404).send('No such data');
-                }
-                else {
-                    res.json(__assign({}, database[req.params.id]));
-                }
-                return [3 /*break*/, 3];
+                connection = _a.sent();
+                return [4 /*yield*/, connection.
+                        execute('INSERT INTO users (user_id, lastname, firstname, age) VALUES (?, ?, ?, ?)', __spreadArray(__spreadArray(__spreadArray([id], req.body.lastname, true), req.body.firstname, true), req.body.age, true))];
             case 2:
+                _a.sent();
+                res.json({ id: id });
+                return [3 /*break*/, 4];
+            case 3:
                 err_4 = _a.sent();
-                res.status(500).send('Failed to retrieve user data.');
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
+                res.status(500).send(err_4);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); });
-//dispaly all user data, all users
-router.get('/users', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var contents, database, err_5;
+//update user data with put() not done
+router.put('/users/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var connection, rows, err_5;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, (0, promises_1.readFile)(fileName, 'utf-8')];
+                _a.trys.push([0, 3, , 4]);
+                return [4 /*yield*/, mysql.createConnection({
+                        host: 'localhost',
+                        user: 'root',
+                        database: 'userdb',
+                        password: process.env.PASSWORD
+                    })];
             case 1:
-                contents = _a.sent();
-                database = JSON.parse(contents);
-                if (Object.keys(database).length === 0) {
-                    res.status(404).send('Database seems to be empty.');
-                }
-                else {
-                    res.json(database);
-                }
-                return [3 /*break*/, 3];
+                connection = _a.sent();
+                return [4 /*yield*/, connection.
+                        execute('SELECT FROM `users` WHERE `user_id` = ?', [req.params.id])];
             case 2:
+                rows = (_a.sent())[0];
+                res.json([rows]);
+                return [3 /*break*/, 4];
+            case 3:
                 err_5 = _a.sent();
-                res.status(500).send('Failed to retrieve user data.');
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
+                res.status(500).send('Failed to update user data.');
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); });

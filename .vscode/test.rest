@@ -11,9 +11,9 @@ POST http://localhost:6666/users
 Content-Type: application/json
 
 {
-  "lastname": "Sanchez",
-  "firstname": "Rick",
-  "age": 80
+  "lastname": "Hardly",
+  "firstname": "Testing",
+  "age": 666
 }
 
 ###
@@ -21,12 +21,12 @@ DELETE http://localhost:6666/users/792823c0-85f8-4aab-bd4b-e497aa030946
 Content-Type: application/json
 
 ###
-PUT http://localhost:6666/users/ec448f0b-a816-49ce-b719-40239835270d
+PUT http://localhost:6666/users/6564dee2-1304-11ed-94dc-ab5bc5caa4d6
 Content-Type: application/json
 
 {
-  "lastname": "Imwit",
-  "firstname": "Imad",
+  "lastname": "Shishke",
+  "firstname": "Vlad",
   "age": 57
 }
 
